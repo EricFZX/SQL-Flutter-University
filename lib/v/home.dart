@@ -1,7 +1,10 @@
 import 'package:accordion/accordion.dart';
 import 'package:bd_project/v/Students/create_students.dart';
+import 'package:bd_project/v/Students/enroll_students.dart';
 import 'package:bd_project/v/Students/list_students.dart';
 import 'package:bd_project/v/Subjects/create_subjects.dart';
+import 'package:bd_project/v/Subjects/list_subjects.dart';
+import 'package:bd_project/v/Subjects/subject_career.dart';
 import 'package:bd_project/v/Teachers/create_teachers.dart';
 import 'package:bd_project/v/Teachers/list_teachers.dart';
 import 'package:bd_project/v/Branches/create_branches.dart';
@@ -87,7 +90,7 @@ class _HomeState extends State<Home> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: const Text("Crear Sucursal"),
+                          title: const Text("Registrar Sucursal"),
                           onTap: () => _ontap(1),
                         ),
                         ListTile(
@@ -103,7 +106,7 @@ class _HomeState extends State<Home> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: const Text("Crear Alumno"),
+                          title: const Text("Registrar Alumno"),
                           onTap: () => _ontap(3),
                         ),
                         ListTile(
@@ -123,13 +126,13 @@ class _HomeState extends State<Home> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: const Text("Crear Docente"),
-                          onTap: () => _ontap(4),
+                          title: const Text("Registrar Docente"),
+                          onTap: () => _ontap(6),
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text("Listar Docentes"),
-                          onTap: () => _ontap(3),
+                          onTap: () => _ontap(7),
                         ),
                       ],
                     )),
@@ -139,18 +142,18 @@ class _HomeState extends State<Home> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: const Text("Crear Asignatura"),
-                          onTap: () => _ontap(7),
+                          title: const Text("Registrar Asignatura"),
+                          onTap: () => _ontap(8),
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text("Listar Asignaturas"),
-                          onTap: () => _ontap(3),
+                          onTap: () => _ontap(9),
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text("Asignar Carrera"),
-                          onTap: () => _ontap(3),
+                          onTap: () => _ontap(10),
                         ),
                       ],
                     )),
@@ -174,12 +177,15 @@ class _HomeState extends State<Home> {
         edit: false,
       ),
       const ListStudents(),
-      const ListTeachers(),
+      const EnrollStudents(),
       CreateTeachers(
         edit: false,
         onTap: _ontap,
       ),
-      CreateSubjects(edit: false, onTap: _ontap)
+      const ListTeachers(),
+      CreateSubjects(edit: false, onTap: _ontap),
+      const ListSubjects(),
+      const SubjectCareer()
     ];
     return Scaffold(
       backgroundColor: _colordefault,

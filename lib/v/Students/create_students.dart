@@ -120,9 +120,9 @@ class _CreateStudentsState extends State<CreateStudents> {
                         height: 15,
                       ),
                       DropdownButtonFormField<Map<String, dynamic>>(
-                        decoration: const InputDecoration(
-                            hintText: 'Selecciona una Sucursal',
-                            border: OutlineInputBorder()),
+                        isExpanded: true,
+                        decoration:
+                            const InputDecoration(border: OutlineInputBorder()),
                         items: _branches.map((sucursal) {
                           return DropdownMenuItem<Map<String, dynamic>>(
                             value: sucursal,
@@ -148,11 +148,13 @@ class _CreateStudentsState extends State<CreateStudents> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API.postStudent(_dni.text, _fName.text, _sName.text,
-                        _fLastname.text, _sLastname.text, _selectedBranche).then((_){
-                          if (!context.mounted) return;
-                          Navigator.pop(context);
-                        });
+                    API
+                        .postStudent(_dni.text, _fName.text, _sName.text,
+                            _fLastname.text, _sLastname.text, _selectedBranche)
+                        .then((_) {
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    });
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),

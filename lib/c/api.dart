@@ -110,6 +110,19 @@ class API {
       rethrow;
     }
   }
+  static Future<dynamic> getSubjects() async {
+    try {
+      final response =
+          await http.get(Uri.parse("http://10.0.2.2:3000/subjects"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   static Future<void> postSubject(nombre, uv) async {
     final response = await http.post(Uri.parse("http://10.0.2.2:3000/subjects"),
@@ -120,3 +133,6 @@ class API {
     if (response.statusCode == 200) {}
   }
 }
+/*static Future<void> postSubject_Career(codigoCarrera,CodigoAsignatura) async {
+  final response = await http.post(Uri.parse("http://10.0.2.2:3000/subjects/career")),
+}*/
