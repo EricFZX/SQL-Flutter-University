@@ -1,4 +1,7 @@
 import 'package:accordion/accordion.dart';
+import 'package:bd_project/v/Careers/career_branch.dart';
+import 'package:bd_project/v/Careers/create_careers.dart';
+import 'package:bd_project/v/Careers/list_careers.dart';
 import 'package:bd_project/v/Students/create_students.dart';
 import 'package:bd_project/v/Students/enroll_students.dart';
 import 'package:bd_project/v/Students/list_students.dart';
@@ -157,6 +160,27 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     )),
+                AccordionSection(
+                    header: _accordionText("Carreras"),
+                    content: Column(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Registrar Carrera"),
+                          onTap: () => _ontap(11),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Listar Carrera"),
+                          onTap: () => _ontap(12),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Asignar sucursal"),
+                          onTap: () => _ontap(13),
+                        ),
+                      ],
+                    )),
               ]),
         ],
       ),
@@ -185,7 +209,15 @@ class _HomeState extends State<Home> {
       const ListTeachers(),
       CreateSubjects(edit: false, onTap: _ontap),
       const ListSubjects(),
-      const SubjectCareer()
+      SubjectCareer(
+        onTap: _ontap,
+      ),
+      CreateCareers(
+        edit: false,
+        onTap: _ontap,
+      ),
+      const ListCareers(),
+      CareerBranche()
     ];
     return Scaffold(
       backgroundColor: _colordefault,

@@ -110,6 +110,7 @@ class API {
       rethrow;
     }
   }
+
   static Future<dynamic> getSubjects() async {
     try {
       final response =
@@ -132,7 +133,73 @@ class API {
         body: jsonEncode({"_nombre": nombre, "_UV": uv}));
     if (response.statusCode == 200) {}
   }
+
+  static Future<void> postSubjectCareer(codigoCarrera, codigoAsignatura) async {
+    final response = await http.post(
+        Uri.parse("http://10.0.2.2:3000/subjects/career"),
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: jsonEncode({
+          "_codigoCarrera": codigoCarrera,
+          "_codigoAsignatura": codigoAsignatura
+        }));
+    if (response.statusCode == 200) {}
+  }
+
+  static Future<dynamic> getSubjectsCareerNO(codigoAsignatura) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/subjects/career/$codigoAsignatura"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> getCareers() async {
+    try {
+      final response =
+          await http.get(Uri.parse("http://10.0.2.2:3000/careers"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> postCareer(nombre, uv) async {
+    try {
+      final response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/careers"),
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: jsonEncode({"_nombre": nombre, "_UV": uv}));
+      if (response.statusCode == 200) {}
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> getCareersBranchNO(codigoCarrera) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/careers/branch/$codigoCarrera"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
-/*static Future<void> postSubject_Career(codigoCarrera,CodigoAsignatura) async {
-  final response = await http.post(Uri.parse("http://10.0.2.2:3000/subjects/career")),
-}*/

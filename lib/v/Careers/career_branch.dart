@@ -1,32 +1,31 @@
 import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
-class SubjectCareer extends StatefulWidget {
-  const SubjectCareer({super.key, required this.onTap});
-  final Function onTap;
+class CareerBranche extends StatefulWidget {
+  const CareerBranche({super.key});
+
   @override
-  State<SubjectCareer> createState() => _SubjectCareerState();
+  State<CareerBranche> createState() => _CareerBrancheState();
 }
 
-class _SubjectCareerState extends State<SubjectCareer> {
+class _CareerBrancheState extends State<CareerBranche> {
   //Variables
-  List<dynamic> _subjects = [];
+  List<dynamic> _branches = [];
   List<dynamic> _careers = [];
-  late int _selectedSubject;
+  late int _selectedBranche;
   late int _selectedCareer;
   //Methods
-  Future<void> _getSubjects() async {
-    final json = await API.getSubjects();
+  Future<void> _getCareers() async {
+    final json = await API.getCareers();
     setState(() {
-      _subjects = json;
+      _careers = json;
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _getSubjects();
+    _getCareers();
   }
 
   @override
@@ -62,33 +61,6 @@ class _SubjectCareerState extends State<SubjectCareer> {
                       isExpanded: true,
                       decoration:
                           const InputDecoration(border: OutlineInputBorder()),
-                      items: _subjects.map((subject) {
-                        return DropdownMenuItem<Map<String, dynamic>>(
-                          value: subject,
-                          child: Text(
-                            subject['_nombre'],
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (Map<String, dynamic>? selectedSubject) async {
-                        final json = await API.getSubjectsCareerNO(
-                            selectedSubject?['_codigoAsignatura'].toString());
-                        setState(() {
-                          _selectedSubject =
-                              selectedSubject?['_codigoAsignatura'];
-                          _careers = json;
-                        });
-                      },
-                      hint: const Text('Selecciona una Asignatura'),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    DropdownButtonFormField<Map<String, dynamic>>(
-                      isExpanded: true,
-                      decoration:
-                          const InputDecoration(border: OutlineInputBorder()),
                       items: _careers.map((career) {
                         return DropdownMenuItem<Map<String, dynamic>>(
                           value: career,
@@ -98,12 +70,39 @@ class _SubjectCareerState extends State<SubjectCareer> {
                           ),
                         );
                       }).toList(),
-                      onChanged: (Map<String, dynamic>? selectedCareer) {
+                      onChanged: (Map<String, dynamic>? selectedCareer) async {
+                        final json = await API.getCareersBranchNO(
+                            selectedCareer?['_codigoCarrera'].toString());
                         setState(() {
                           _selectedCareer = selectedCareer?['_codigoCarrera'];
+                          _branches = json;
                         });
                       },
-                      hint: const Text('Seleccione una carrera'),
+                      hint: const Text('Selecciona una carrera'),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    DropdownButtonFormField<Map<String, dynamic>>(
+                      isExpanded: true,
+                      decoration:
+                          const InputDecoration(border: OutlineInputBorder()),
+                      items: _branches.map((branch) {
+                        return DropdownMenuItem<Map<String, dynamic>>(
+                          value: branch,
+                          child: Text(
+                            branch['_nombre'],
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (Map<String, dynamic>? selectedBranche) {
+                        setState(() {
+                          _selectedBranche =
+                              selectedBranche?['_codigoSucursal'];
+                        });
+                      },
+                      hint: const Text('Seleccione una sucursal'),
                     ),
                   ]),
                 )),
@@ -111,13 +110,7 @@ class _SubjectCareerState extends State<SubjectCareer> {
                   height: 15,
                 ),
                 GestureDetector(
-                  onTap: () async {
-                    API
-                        .postSubjectCareer(_selectedCareer, _selectedSubject)
-                        .then((_) {
-                      widget.onTap(0, pop: false);
-                    });
-                  },
+                  onTap: () async {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     width: MediaQuery.sizeOf(context).width,
