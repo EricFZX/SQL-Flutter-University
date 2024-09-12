@@ -10,42 +10,45 @@ class ListTeachers extends StatefulWidget {
 
 class _ListTeachersState extends State<ListTeachers> {
   //Variables
-  List<dynamic> teachers = [];
+  List<dynamic> _teachers = [];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: FutureBuilder(
+    return Scaffold(
+      body: FutureBuilder(
         future: API.getTeachers(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            teachers = snapshot.data;
+            _teachers = snapshot.data;
           }
-          return ListView.builder(
-            itemCount: teachers.length,
-            itemBuilder: (context, index) {
-              dynamic teacher = teachers[index];
-              return ListTile(
-                  title: Text(
-                    "${teacher["_primerNombre"]} ${teacher["_primerApellido"]}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text("Codigo: ${teacher["_codigoDocente"]}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.delete),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        child: const Icon(Icons.arrow_forward_ios),
-                      )
-                    ],
-                  ));
-            },
-          );
+          return SingleChildScrollView(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("Codigo Docente")),
+                DataColumn(label: Text("DNI")),
+                DataColumn(label: Text("P.Nombre")),
+                DataColumn(label: Text("S.Nombre")),
+                DataColumn(label: Text("P.Apellido")),
+                DataColumn(label: Text("S.Apellido")),
+                DataColumn(label: Text("Salario")),
+
+              ],
+              rows: _teachers.map((row) {
+                return DataRow(cells: [
+                  DataCell(Text(row['_codigoDocente'].toString())),
+                  DataCell(Text(row['_DNI'])),
+                  DataCell(Text(row['_primerNombre'])),
+                  DataCell(Text(row['_segundoNombre'])),
+                  DataCell(Text(row['_primerApellido'])),
+                  DataCell(Text(row['_segundoApellido'])),
+                  DataCell(Text(row['_salario'].toString())),
+                ]);
+              }).toList(),
+            ),
+          ));
         },
-      ),);
+      ),
+    );
   }
 }

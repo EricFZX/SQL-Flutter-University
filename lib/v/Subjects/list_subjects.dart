@@ -10,8 +10,8 @@ class ListSubjects extends StatefulWidget {
 
 class _ListSubjectsState extends State<ListSubjects> {
   //Variables
-  List <dynamic> _subjects = [];
-  
+  List<dynamic> _subjects = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,33 +21,24 @@ class _ListSubjectsState extends State<ListSubjects> {
           if (snapshot.hasData) {
             _subjects = snapshot.data;
           }
-          return ListView.builder(
-            itemCount: _subjects.length,
-            itemBuilder: (context, index) {
-              dynamic subject = _subjects[index];
-              return ListTile(
-                  title: Text(
-                    subject["_nombre"],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                      "Codigo:${subject["_codigoAsignatura"]}\nUV:${subject["_UV"]}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.delete),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        child: const Icon(Icons.arrow_forward_ios),
-                      )
-                    ],
-                  ));
-            },
-          );
+          return SingleChildScrollView(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("Codigo Asignatura")),
+                DataColumn(label: Text("Nombre")),
+                DataColumn(label: Text("U.V")),
+              ],
+              rows: _subjects.map((row) {
+                return DataRow(cells: [
+                  DataCell(Text(row['_codigoAsignatura'].toString())),
+                  DataCell(Text(row['_nombre'])),
+                  DataCell(Text(row['_UV'].toString())),
+                ]);
+              }).toList(),
+            ),
+          ));
         },
       ),
     );

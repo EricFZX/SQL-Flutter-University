@@ -21,33 +21,28 @@ class _ListBranchesState extends State<ListBranches> {
           if (snapshot.hasData) {
             _branches = snapshot.data;
           }
-          return ListView.builder(
-            itemCount: _branches.length,
-            itemBuilder: (context, index) {
-              dynamic branch = _branches[index];
-              return ListTile(
-                  title: Text(
-                    branch["_nombre"],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                      "${branch["_departamento"]}, ${branch["_ciudad"]}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.delete),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        child: const Icon(Icons.arrow_forward_ios),
-                      )
-                    ],
-                  ));
-            },
-          );
+          return SingleChildScrollView(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("Codigo Sucursal")),
+                DataColumn(label: Text("Nombre")),
+                DataColumn(label: Text("Departamento")),
+                DataColumn(label: Text("Ciudad")),
+                DataColumn(label: Text("Calle"))
+              ],
+              rows: _branches.map((row) {
+                return DataRow(cells: [
+                  DataCell(Text(row['_codigoSucursal'].toString())),
+                  DataCell(Text(row['_nombre'])),
+                  DataCell(Text(row['_departamento'])),
+                  DataCell(Text(row['_ciudad'])),
+                  DataCell(Text(row['_calle'])),
+                ]);
+              }).toList(),
+            ),
+          ));
         },
       ),
     );

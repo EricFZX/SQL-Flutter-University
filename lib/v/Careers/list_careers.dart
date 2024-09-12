@@ -1,5 +1,6 @@
 import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ListCareers extends StatefulWidget {
   const ListCareers({super.key});
@@ -20,33 +21,30 @@ class _ListCareersState extends State<ListCareers> {
           if (snapshot.hasData) {
             _careers = snapshot.data;
           }
-          return ListView.builder(
-            itemCount: _careers.length,
-            itemBuilder: (context, index) {
-              dynamic career = _careers[index];
-              return ListTile(
-                  title: Text(
-                    career["_nombre"],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                      "Codigo:${career["_codigoCarrera"]}\nUV:${career["_UV"]}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.delete),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        child: const Icon(Icons.arrow_forward_ios),
-                      )
-                    ],
-                  ));
-            },
-          );
+          return SingleChildScrollView(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("Codigo Carrera")),
+                DataColumn(label: Text("Nombre")),
+                DataColumn(label: Text("U.V")),
+                DataColumn(label: Text("Año Carrera")),
+              ],
+              rows: _careers.map((row) {
+                DateTime dateTime = DateTime.parse(row['_añoCarrera']);
+
+                String date = DateFormat('yyyy-MM-dd').format(dateTime);
+
+                return DataRow(cells: [
+                  DataCell(Text(row['_codigoCarrera'].toString())),
+                  DataCell(Text(row['_nombre'])),
+                  DataCell(Text(row['_UV'].toString())),
+                  DataCell(Text(date)),
+                ]);
+              }).toList(),
+            ),
+          ));
         },
       ),
     );

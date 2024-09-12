@@ -10,7 +10,7 @@ class ListStudents extends StatefulWidget {
 
 class _ListStudentsState extends State<ListStudents> {
   //Variables
-  List<dynamic> students = [];
+  List<dynamic> _students = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,34 +18,32 @@ class _ListStudentsState extends State<ListStudents> {
         future: API.getStudents(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            students = snapshot.data;
+            _students = snapshot.data;
           }
-          return ListView.builder(
-            itemCount: students.length,
-            itemBuilder: (context, index) {
-              dynamic student = students[index];
-              return ListTile(
-                  title: Text(
-                    "${student["_primerNombre"]} ${student["_primerApellido"]}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text("Codigo: ${student["_codigoAlumno"]}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.delete),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        child: const Icon(Icons.arrow_forward_ios),
-                      )
-                    ],
-                  ));
-            },
-          );
+          return SingleChildScrollView(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("Codigo Alumno")),
+                DataColumn(label: Text("DNI")),
+                DataColumn(label: Text("P.Nombre")),
+                DataColumn(label: Text("S.Nombre")),
+                DataColumn(label: Text("P.Apellido")),
+                 DataColumn(label: Text("S.Apellido"))
+              ],
+              rows: _students.map((row) {
+                return DataRow(cells: [
+                  DataCell(Text(row['_codigoAlumno'].toString())),
+                  DataCell(Text(row['_DNI'])),
+                  DataCell(Text(row['_primerNombre'])),
+                  DataCell(Text(row['_segundoNombre'])),
+                  DataCell(Text(row['_primerApellido'])),
+                  DataCell(Text(row['_segundoApellido'])),
+                ]);
+              }).toList(),
+            ),
+          ));
         },
       ),
     );

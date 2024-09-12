@@ -2,6 +2,8 @@ import 'package:accordion/accordion.dart';
 import 'package:bd_project/v/Careers/career_branch.dart';
 import 'package:bd_project/v/Careers/create_careers.dart';
 import 'package:bd_project/v/Careers/list_careers.dart';
+import 'package:bd_project/v/Sections/create_sections.dart';
+import 'package:bd_project/v/Sections/list_sections.dart';
 import 'package:bd_project/v/Students/create_students.dart';
 import 'package:bd_project/v/Students/enroll_students.dart';
 import 'package:bd_project/v/Students/list_students.dart';
@@ -119,7 +121,8 @@ class _HomeState extends State<Home> {
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: const Text("Matricular Estudiante"),
+                          title: const Text("Matricular Carrera"),
+                          onTap: () => _ontap(16),
                         )
                       ],
                     )),
@@ -181,6 +184,22 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     )),
+                AccordionSection(
+                    header: _accordionText("Secciones"),
+                    content: Column(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Registrar Seccion"),
+                          onTap: () => _ontap(14),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Listar Secciones"),
+                          onTap: () => _ontap(15),
+                        ),
+                      ],
+                    )),
               ]),
         ],
       ),
@@ -217,7 +236,13 @@ class _HomeState extends State<Home> {
         onTap: _ontap,
       ),
       const ListCareers(),
-      CareerBranche()
+      CareerBranche(onTap: _ontap),
+      CreateSections(
+        edit: false,
+        onTap: _ontap,
+      ),
+      const ListSections(),
+      EnrollStudents()
     ];
     return Scaffold(
       backgroundColor: _colordefault,

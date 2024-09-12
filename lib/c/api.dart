@@ -191,12 +191,95 @@ class API {
 
   static Future<dynamic> getCareersBranchNO(codigoCarrera) async {
     try {
-      final response = await http.get(
-          Uri.parse("http://10.0.2.2:3000/careers/branch/$codigoCarrera"));
+      final response = await http
+          .get(Uri.parse("http://10.0.2.2:3000/careers/branch/$codigoCarrera"));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
         throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> postCareerBranch(codigoCarrera, codigoSucursal) async {
+    try {
+      final response = await http.post(
+          Uri.parse("http://10.0.2.2:3000/careers/branch"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode({
+            "_codigoSucursal": codigoSucursal,
+            "_codigoCarrera": codigoCarrera
+          }));
+      if (response.statusCode == 200) {}
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> getSectionsInfo() async {
+    try {
+      final response =
+          await http.get(Uri.parse("http://10.0.2.2:3000/sections"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> branchTeacher(codigoSucursal) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/teachers/branch/$codigoSucursal"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> branchSubject(codigoSucursal) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/subjects/branch/$codigoSucursal"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> postSection(
+      codigoAsignatura, codigoDocente, cupos) async {
+    try {
+      final response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/sections"),
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: jsonEncode({
+                "_codigoAsignatura": codigoAsignatura,
+                "_codigoDocente": codigoDocente,
+                "_cupos": cupos
+              }));
+      if (response.statusCode == 200) {}
+    } catch (e) {
+      rethrow;
+    }
+  }
+  static Future<dynamic> branchStudent(codigoSucursal) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/students/branch/$codigoSucursal"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
       }
     } catch (e) {
       rethrow;

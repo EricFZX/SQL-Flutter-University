@@ -2,8 +2,8 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CareerBranche extends StatefulWidget {
-  const CareerBranche({super.key});
-
+  const CareerBranche({super.key, required this.onTap});
+  final Function onTap;
   @override
   State<CareerBranche> createState() => _CareerBrancheState();
 }
@@ -110,7 +110,13 @@ class _CareerBrancheState extends State<CareerBranche> {
                   height: 15,
                 ),
                 GestureDetector(
-                  onTap: () async {},
+                  onTap: () async {
+                    await API
+                        .postCareerBranch(_selectedCareer, _selectedBranche)
+                        .then((_) {
+                      widget.onTap(0, pop: false);
+                    });
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     width: MediaQuery.sizeOf(context).width,
