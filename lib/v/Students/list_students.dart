@@ -11,6 +11,32 @@ class ListStudents extends StatefulWidget {
 class _ListStudentsState extends State<ListStudents> {
   //Variables
   List<dynamic> _students = [];
+
+  Future<void> deleteDialog(codigoAlumno) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("¿Eliminar Registro?"),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  await API.deleteStudent(codigoAlumno);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancelar"))
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +56,8 @@ class _ListStudentsState extends State<ListStudents> {
                 DataColumn(label: Text("P.Nombre")),
                 DataColumn(label: Text("S.Nombre")),
                 DataColumn(label: Text("P.Apellido")),
-                 DataColumn(label: Text("S.Apellido"))
+                DataColumn(label: Text("S.Apellido")),
+                DataColumn(label: Text("Acciones"))
               ],
               rows: _students.map((row) {
                 return DataRow(cells: [
@@ -40,6 +67,14 @@ class _ListStudentsState extends State<ListStudents> {
                   DataCell(Text(row['_segundoNombre'])),
                   DataCell(Text(row['_primerApellido'])),
                   DataCell(Text(row['_segundoApellido'])),
+                  DataCell(Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => deleteDialog(row['_codigoAlumno']),
+                        child: const Icon(Icons.delete),
+                      )
+                    ],
+                  ))
                 ]);
               }).toList(),
             ),

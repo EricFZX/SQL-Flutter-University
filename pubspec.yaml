@@ -38,6 +38,7 @@ dependencies:
   accordion: ^2.6.0
   http: ^1.2.2
   intl: ^0.18.0
+  toastification: ^2.2.0
 
 dev_dependencies:
   flutter_test:

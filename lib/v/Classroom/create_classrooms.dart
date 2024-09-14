@@ -1,20 +1,32 @@
 import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
-class CreateBranches extends StatefulWidget {
-  const CreateBranches({super.key, required this.edit, required this.onTap});
+class CreateClassrooms extends StatefulWidget {
+  const CreateClassrooms({super.key, required this.edit, required this.onTap});
   final bool edit;
   final Function onTap;
   @override
-  State<CreateBranches> createState() => _CreateBranchesState();
+  State<CreateClassrooms> createState() => _CreateClassroomsState();
 }
 
-class _CreateBranchesState extends State<CreateBranches> {
+class _CreateClassroomsState extends State<CreateClassrooms> {
   //Variables
-  final TextEditingController _nombre = TextEditingController();
-  final TextEditingController _departamento = TextEditingController();
-  final TextEditingController _ciudad = TextEditingController();
-  final TextEditingController _calle = TextEditingController();
+  List<dynamic> _branches = [];
+  late int _selectedBranche;
+  final TextEditingController _cupos = TextEditingController();
+  //Methods
+  Future<void> _getBranches() async {
+    final json = await API.getBranches();
+    setState(() {
+      _branches = json;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getBranches();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +36,12 @@ class _CreateBranchesState extends State<CreateBranches> {
         padding: const EdgeInsets.all(20),
         child: Center(
           child: Container(
-            height: MediaQuery.of(context).size.height / 1.8,
+            height: 300,
             padding: const EdgeInsets.all(20),
             width: MediaQuery.sizeOf(context).width,
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(10)),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   "FORMULARIO",
@@ -42,12 +53,35 @@ class _CreateBranchesState extends State<CreateBranches> {
                 Expanded(
                     child: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      DropdownButtonFormField<Map<String, dynamic>>(
+                        isExpanded: true,
+                        decoration:
+                            const InputDecoration(border: OutlineInputBorder()),
+                        items: _branches.map((sucursal) {
+                          return DropdownMenuItem<Map<String, dynamic>>(
+                            value: sucursal,
+                            child: Text(sucursal['_nombre']),
+                          );
+                        }).toList(),
+                        onChanged: (Map<String, dynamic>? selectedSucursal) {
+                          setState(() {
+                            _selectedBranche =
+                                selectedSucursal?['_codigoSucursal'];
+                          });
+                        },
+                        hint: const Text('Selecciona una sucursal'),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
                       TextFormField(
-                        controller: _nombre,
+                        controller: _cupos,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "Nombre",
+                          hintText: "Capacidad de Cupos",
                           hintStyle: TextStyle(
                               color: Color.fromARGB(255, 160, 160, 147)),
                         ),
@@ -55,43 +89,7 @@ class _CreateBranchesState extends State<CreateBranches> {
                       const SizedBox(
                         height: 15,
                       ),
-                      TextFormField(
-                        controller: _departamento,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Departamento",
-                          hintStyle: TextStyle(
-                              color: Color.fromARGB(255, 160, 160, 147)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      TextFormField(
-                        controller: _ciudad,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Ciudad",
-                          hintStyle: TextStyle(
-                              color: Color.fromARGB(255, 160, 160, 147)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      TextFormField(
-                        controller: _calle,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Calle",
-                          hintStyle: TextStyle(
-                              color: Color.fromARGB(255, 160, 160, 147)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                    ]
+                    ],
                   ),
                 )),
                 const SizedBox(
@@ -99,9 +97,8 @@ class _CreateBranchesState extends State<CreateBranches> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API.postBranch(_nombre.text,_departamento.text, _calle.text, _ciudad.text).then((_) {
-                      widget.onTap(0, pop: false);
-                    });
+                    API.postClassroom(_selectedBranche, _cupos.text);
+                    widget.onTap(18, pop: false);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -110,7 +107,7 @@ class _CreateBranchesState extends State<CreateBranches> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(10)),
                     child: Text(
-                      widget.edit ? "EDITAR SUCURSAL" : "CREAR SUCURSAL",
+                      widget.edit ? "EDITAR AULA" : "CREAR AULA",
                       style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

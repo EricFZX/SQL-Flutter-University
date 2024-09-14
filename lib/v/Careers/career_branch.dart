@@ -12,7 +12,7 @@ class _CareerBrancheState extends State<CareerBranche> {
   //Variables
   List<dynamic> _branches = [];
   List<dynamic> _careers = [];
-  late int _selectedBranche;
+  int? _selectedBranche;
   late int _selectedCareer;
   //Methods
   Future<void> _getCareers() async {
@@ -74,6 +74,7 @@ class _CareerBrancheState extends State<CareerBranche> {
                         final json = await API.getCareersBranchNO(
                             selectedCareer?['_codigoCarrera'].toString());
                         setState(() {
+                          _branches = [];
                           _selectedCareer = selectedCareer?['_codigoCarrera'];
                           _branches = json;
                         });
@@ -103,6 +104,12 @@ class _CareerBrancheState extends State<CareerBranche> {
                         });
                       },
                       hint: const Text('Seleccione una sucursal'),
+                      value: _branches.isNotEmpty
+                          ? _branches.firstWhere(
+                              (branch) =>
+                                  branch['_codigoSucursal'] == _selectedBranche,
+                              orElse: () => null)
+                          : null,
                     ),
                   ]),
                 )),

@@ -66,8 +66,8 @@ class _EnrollStudentsState extends State<EnrollStudents> {
                         );
                       }).toList(),
                       onChanged: (Map<String, dynamic>? selectedBranche) async {
-                        final jsonStudent =
-                            await API.branchStudent(selectedBranche);
+                        final jsonStudent = await API
+                            .branchStudent(selectedBranche?['_codigoSucursal']);
                         setState(() {
                           _students = jsonStudent;
                         });

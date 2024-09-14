@@ -13,7 +13,7 @@ class _SubjectCareerState extends State<SubjectCareer> {
   List<dynamic> _subjects = [];
   List<dynamic> _careers = [];
   late int _selectedSubject;
-  late int _selectedCareer;
+  int? _selectedCareer;
   //Methods
   Future<void> _getSubjects() async {
     final json = await API.getSubjects();
@@ -24,7 +24,6 @@ class _SubjectCareerState extends State<SubjectCareer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getSubjects();
   }
@@ -75,6 +74,7 @@ class _SubjectCareerState extends State<SubjectCareer> {
                         final json = await API.getSubjectsCareerNO(
                             selectedSubject?['_codigoAsignatura'].toString());
                         setState(() {
+                          _careers = [];
                           _selectedSubject =
                               selectedSubject?['_codigoAsignatura'];
                           _careers = json;
@@ -104,6 +104,12 @@ class _SubjectCareerState extends State<SubjectCareer> {
                         });
                       },
                       hint: const Text('Seleccione una carrera'),
+                      value: _careers.isNotEmpty
+                          ? _careers.firstWhere(
+                              (career) =>
+                                  career['_codigoCarrera'] == _selectedCareer,
+                              orElse: () => null)
+                          : null,
                     ),
                   ]),
                 )),

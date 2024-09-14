@@ -14,6 +14,31 @@ class _ListCareersState extends State<ListCareers> {
   List<dynamic> _careers = [];
   @override
   Widget build(BuildContext context) {
+    Future<void> deleteDialog(codigoCarrera) {
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("¿Eliminar Registro?"),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    await API.deleteCareer(codigoCarrera);
+                    setState(() {});
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Aceptar")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancelar"))
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       body: FutureBuilder(
         future: API.getCareers(),
@@ -30,6 +55,7 @@ class _ListCareersState extends State<ListCareers> {
                 DataColumn(label: Text("Nombre")),
                 DataColumn(label: Text("U.V")),
                 DataColumn(label: Text("Año Carrera")),
+                DataColumn(label: Text("Acciones"))
               ],
               rows: _careers.map((row) {
                 DateTime dateTime = DateTime.parse(row['_añoCarrera']);
@@ -41,6 +67,14 @@ class _ListCareersState extends State<ListCareers> {
                   DataCell(Text(row['_nombre'])),
                   DataCell(Text(row['_UV'].toString())),
                   DataCell(Text(date)),
+                  DataCell(Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => deleteDialog(row['_codigoCarrera']),
+                        child: const Icon(Icons.delete),
+                      )
+                    ],
+                  ))
                 ]);
               }).toList(),
             ),

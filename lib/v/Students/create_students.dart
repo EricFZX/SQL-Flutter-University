@@ -2,8 +2,9 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CreateStudents extends StatefulWidget {
-  const CreateStudents({super.key, required this.edit});
+  const CreateStudents({super.key, required this.edit, required this.ontTap});
   final bool edit;
+  final Function ontTap;
   @override
   State<CreateStudents> createState() => _CreateStudentsState();
 }
@@ -152,8 +153,7 @@ class _CreateStudentsState extends State<CreateStudents> {
                         .postStudent(_dni.text, _fName.text, _sName.text,
                             _fLastname.text, _sLastname.text, _selectedBranche)
                         .then((_) {
-                      if (!context.mounted) return;
-                      Navigator.pop(context);
+                      widget.ontTap(0, pop: false);
                     });
                   },
                   child: Container(

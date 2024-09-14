@@ -12,6 +12,31 @@ class _ListBranchesState extends State<ListBranches> {
   //Variables
   List<dynamic> _branches = [];
 
+  Future<void> deleteDialog(codigoSucursal) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("¿Eliminar Registro?"),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  await API.deleteBranch(codigoSucursal);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancelar"))
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +55,8 @@ class _ListBranchesState extends State<ListBranches> {
                 DataColumn(label: Text("Nombre")),
                 DataColumn(label: Text("Departamento")),
                 DataColumn(label: Text("Ciudad")),
-                DataColumn(label: Text("Calle"))
+                DataColumn(label: Text("Calle")),
+                DataColumn(label: Text("Acciones"))
               ],
               rows: _branches.map((row) {
                 return DataRow(cells: [
@@ -39,6 +65,14 @@ class _ListBranchesState extends State<ListBranches> {
                   DataCell(Text(row['_departamento'])),
                   DataCell(Text(row['_ciudad'])),
                   DataCell(Text(row['_calle'])),
+                  DataCell(Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => deleteDialog(row['_codigoSucursal']),
+                        child: const Icon(Icons.delete),
+                      )
+                    ],
+                  ))
                 ]);
               }).toList(),
             ),

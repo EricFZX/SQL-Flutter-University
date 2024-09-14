@@ -11,6 +11,32 @@ class ListTeachers extends StatefulWidget {
 class _ListTeachersState extends State<ListTeachers> {
   //Variables
   List<dynamic> _teachers = [];
+
+  Future<void> deleteDialog(codigoDocente) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("¿Eliminar Registro?"),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  await API.deleteTeacher(codigoDocente);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancelar"))
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +58,7 @@ class _ListTeachersState extends State<ListTeachers> {
                 DataColumn(label: Text("P.Apellido")),
                 DataColumn(label: Text("S.Apellido")),
                 DataColumn(label: Text("Salario")),
-
+                DataColumn(label: Text("Acciones"))
               ],
               rows: _teachers.map((row) {
                 return DataRow(cells: [
@@ -43,6 +69,14 @@ class _ListTeachersState extends State<ListTeachers> {
                   DataCell(Text(row['_primerApellido'])),
                   DataCell(Text(row['_segundoApellido'])),
                   DataCell(Text(row['_salario'].toString())),
+                  DataCell(Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => deleteDialog(row['_codigoDocente']),
+                        child: const Icon(Icons.delete),
+                      )
+                    ],
+                  ))
                 ]);
               }).toList(),
             ),

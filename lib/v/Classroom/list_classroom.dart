@@ -1,18 +1,17 @@
 import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
-class ListSubjects extends StatefulWidget {
-  const ListSubjects({super.key});
+class ListClassroom extends StatefulWidget {
+  const ListClassroom({super.key});
 
   @override
-  State<ListSubjects> createState() => _ListSubjectsState();
+  State<ListClassroom> createState() => _ListClassroomState();
 }
 
-class _ListSubjectsState extends State<ListSubjects> {
+class _ListClassroomState extends State<ListClassroom> {
   //Variables
-  List<dynamic> _subjects = [];
-
-  Future<void> deleteDialog(codigoAsignatura) {
+  List<dynamic> _classrooms = [];
+  Future<void> deleteDialog(codigoAula) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -21,7 +20,7 @@ class _ListSubjectsState extends State<ListSubjects> {
           actions: [
             TextButton(
                 onPressed: () async {
-                  await API.deleteSubject(codigoAsignatura);
+                  await API.deleteClassroom(codigoAula);
                   setState(() {});
                   Navigator.pop(context);
                 },
@@ -41,32 +40,34 @@ class _ListSubjectsState extends State<ListSubjects> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: API.getSubjects(),
+        future: API.getClassrooms(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            _subjects = snapshot.data;
+            _classrooms = snapshot.data;
           }
+
           return SingleChildScrollView(
               child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text("Codigo Asignatura")),
-                DataColumn(label: Text("Nombre")),
-                DataColumn(label: Text("U.V")),
-                DataColumn(label: Text("Acciones"))
+                DataColumn(label: Text("Codigo Aula")),
+                DataColumn(label: Text("Sucursal")),
+                DataColumn(label: Text("Cupos")),
+                DataColumn(label: Text("Acciones")),
               ],
-              rows: _subjects.map((row) {
+              rows: _classrooms.map((row) {
                 return DataRow(cells: [
-                  DataCell(Text(row['_codigoAsignatura'].toString())),
+                  DataCell(Text(row['_codigoAula'].toString())),
                   DataCell(Text(row['_nombre'])),
-                  DataCell(Text(row['_UV'].toString())),
+                  DataCell(Text(row['_cupos'].toString())),
                   DataCell(Row(
                     children: [
-                      GestureDetector(
-                        onTap: () => deleteDialog(row['_codigoAsignatura']),
-                        child: const Icon(Icons.delete),
-                      )
+                      IconButton(
+                          onPressed: () {
+                            deleteDialog(row['_codigoAula']);
+                          },
+                          icon: const Icon(Icons.delete))
                     ],
                   ))
                 ]);

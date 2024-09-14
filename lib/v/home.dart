@@ -2,6 +2,8 @@ import 'package:accordion/accordion.dart';
 import 'package:bd_project/v/Careers/career_branch.dart';
 import 'package:bd_project/v/Careers/create_careers.dart';
 import 'package:bd_project/v/Careers/list_careers.dart';
+import 'package:bd_project/v/Classroom/create_classrooms.dart';
+import 'package:bd_project/v/Classroom/list_classroom.dart';
 import 'package:bd_project/v/Sections/create_sections.dart';
 import 'package:bd_project/v/Sections/list_sections.dart';
 import 'package:bd_project/v/Students/create_students.dart';
@@ -200,6 +202,22 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     )),
+                AccordionSection(
+                    header: _accordionText("Aulas"),
+                    content: Column(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Crear Aulas"),
+                          onTap: () => _ontap(17),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Listar Aulas"),
+                          onTap: () => _ontap(18),
+                        ),
+                      ],
+                    )),
               ]),
         ],
       ),
@@ -216,9 +234,7 @@ class _HomeState extends State<Home> {
         onTap: _ontap,
       ),
       const ListBranches(),
-      CreateStudents(
-        edit: false,
-      ),
+      CreateStudents(edit: false, ontTap: _ontap),
       const ListStudents(),
       const EnrollStudents(),
       CreateTeachers(
@@ -242,7 +258,12 @@ class _HomeState extends State<Home> {
         onTap: _ontap,
       ),
       const ListSections(),
-      EnrollStudents()
+      EnrollStudents(),
+      CreateClassrooms(
+        edit: false,
+        onTap: _ontap,
+      ),
+      const ListClassroom()
     ];
     return Scaffold(
       backgroundColor: _colordefault,

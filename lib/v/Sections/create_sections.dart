@@ -14,9 +14,11 @@ class _CreateSectionsState extends State<CreateSections> {
   List<dynamic> _branches = [];
   List<dynamic> _teachers = [];
   List<dynamic> _subjects = [];
+  List<dynamic> _classrooms = [];
+
   int? _selectedTeacher;
   int? _selectedSubject;
-  final TextEditingController _cupos = TextEditingController();
+  int? _selectedClassroom;
 
   Future<void> _getBranches() async {
     final json = await API.getBranches();
@@ -75,11 +77,16 @@ class _CreateSectionsState extends State<CreateSections> {
                             .branchTeacher(selectedBranche?['_codigoSucursal']);
                         final jsonSubjects = await API
                             .branchSubject(selectedBranche?['_codigoSucursal']);
+                        final jsonCareers = await API.branchClassroom(
+                            selectedBranche?['_codigoSucursal']);
+
                         setState(() {
                           _teachers = [];
                           _subjects = [];
+                          _classrooms = [];
                           _teachers = jsonTeachers;
                           _subjects = jsonSubjects;
+                          _classrooms = jsonCareers;
                         });
                       },
                       hint: const Text('Seleccione una sucursal'),
@@ -149,14 +156,37 @@ class _CreateSectionsState extends State<CreateSections> {
                     const SizedBox(
                       height: 15,
                     ),
-                    TextFormField(
-                      controller: _cupos,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Asignar Cupos",
-                        hintStyle: TextStyle(
-                            color: Color.fromARGB(255, 160, 160, 147)),
-                      ),
+                    DropdownButtonFormField<Map<String, dynamic>>(
+                      isExpanded: true,
+                      decoration:
+                          const InputDecoration(border: OutlineInputBorder()),
+                      items: _classrooms.map((classroom) {
+                        return DropdownMenuItem<Map<String, dynamic>>(
+                          value: classroom,
+                          child: Text(
+                            "COD:${classroom['_codigoAula']} CUPOS:${classroom['_cupos']}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged:
+                          (Map<String, dynamic>? selectedClassroom) async {
+                        setState(() {
+                          _selectedClassroom =
+                              selectedClassroom?['_codigoAula'];
+                        });
+                      },
+                      hint: const Text('Seleccione un Aula'),
+                      value: _classrooms.isNotEmpty
+                          ? _classrooms.firstWhere(
+                              (classroom) =>
+                                  classroom['_codigoAula'] ==
+                                  _selectedClassroom,
+                              orElse: () => null)
+                          : null,
+                    ),
+                    const SizedBox(
+                      height: 15,
                     ),
                   ]),
                 )),
@@ -165,7 +195,10 @@ class _CreateSectionsState extends State<CreateSections> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API.postSection(_selectedSubject, _selectedTeacher, _cupos.text).then((_) {
+                    API
+                        .postSection(_selectedSubject, _selectedTeacher,
+                            _selectedClassroom)
+                        .then((_) {
                       widget.onTap(0, pop: false);
                     });
                   },
