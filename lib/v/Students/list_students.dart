@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Students/info_student.dart';
 import 'package:flutter/material.dart';
 
 class ListStudents extends StatefulWidget {
@@ -67,13 +68,31 @@ class _ListStudentsState extends State<ListStudents> {
                   DataCell(Text(row['_segundoNombre'])),
                   DataCell(Text(row['_primerApellido'])),
                   DataCell(Text(row['_segundoApellido'])),
-                  DataCell(Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => deleteDialog(row['_codigoAlumno']),
-                        child: const Icon(Icons.delete),
-                      )
-                    ],
+                  DataCell(SizedBox(
+                    width: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () => deleteDialog(row['_codigoAlumno']),
+                          child: const Icon(Icons.delete),
+                        ),
+                        GestureDetector(
+                          onTap: () => (),
+                          child: const Icon(Icons.edit),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InfoStudent(
+                                        codigoAlumno: row['_codigoAlumno'])));
+                          },
+                          child: const Icon(Icons.remove_red_eye),
+                        )
+                      ],
+                    ),
                   ))
                 ]);
               }).toList(),

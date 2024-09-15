@@ -9,6 +9,7 @@ import 'package:bd_project/v/Sections/list_sections.dart';
 import 'package:bd_project/v/Students/create_students.dart';
 import 'package:bd_project/v/Students/enroll_students.dart';
 import 'package:bd_project/v/Students/list_students.dart';
+import 'package:bd_project/v/Students/student_section.dart';
 import 'package:bd_project/v/Subjects/create_subjects.dart';
 import 'package:bd_project/v/Subjects/list_subjects.dart';
 import 'package:bd_project/v/Subjects/subject_career.dart';
@@ -124,7 +125,12 @@ class _HomeState extends State<Home> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text("Matricular Carrera"),
-                          onTap: () => _ontap(16),
+                          onTap: () => _ontap(5),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text("Matricular Seccion"),
+                          onTap: () => _ontap(18),
                         )
                       ],
                     )),
@@ -209,12 +215,12 @@ class _HomeState extends State<Home> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text("Crear Aulas"),
-                          onTap: () => _ontap(17),
+                          onTap: () => _ontap(16),
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text("Listar Aulas"),
-                          onTap: () => _ontap(18),
+                          onTap: () => _ontap(17),
                         ),
                       ],
                     )),
@@ -236,7 +242,9 @@ class _HomeState extends State<Home> {
       const ListBranches(),
       CreateStudents(edit: false, ontTap: _ontap),
       const ListStudents(),
-      const EnrollStudents(),
+      EnrollStudents(
+        ontap: _ontap,
+      ),
       CreateTeachers(
         edit: false,
         onTap: _ontap,
@@ -258,12 +266,14 @@ class _HomeState extends State<Home> {
         onTap: _ontap,
       ),
       const ListSections(),
-      EnrollStudents(),
       CreateClassrooms(
         edit: false,
         onTap: _ontap,
       ),
-      const ListClassroom()
+      const ListClassroom(),
+      StudentSection(
+        onTap: _ontap,
+      )
     ];
     return Scaffold(
       backgroundColor: _colordefault,

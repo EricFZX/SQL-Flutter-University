@@ -123,6 +123,27 @@ class API {
   }
 
   //Post Methods
+  static Future<void> postStudentSection(codigoAlumno, codigoSeccion) async {
+    try {
+      var response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/sections/students"),
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: json.encode(
+                {
+                  "_codigoAlumno": codigoAlumno,
+                  "_codigoSeccion": codigoSeccion,
+                },
+              ));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<void> postStudent(
       String dni, fName, sName, fLastname, sLastname, branch) async {
     try {
@@ -252,6 +273,27 @@ class API {
           },
           body:
               jsonEncode({"_codigoSucursal": codigoSucursal, "_cupos": cupos}));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> postStudentCareer(codigoCarrera, codigoAlumno) async {
+    try {
+      var response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/students/career"),
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: json.encode(
+                {
+                  "_codigoCarrera": codigoCarrera.toString(),
+                  "_codigoAlumno": codigoAlumno.toString(),
+                },
+              ));
       if (response.statusCode == 200) {
         toastSucces();
       }
@@ -464,6 +506,66 @@ class API {
           Uri.parse("http://10.0.2.2:3000/classroom/branch/$codigoSucursal"));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> careerStudentNo(codigoAlumno, codigoSucursal) async {
+    try {
+      final response = await http.get(Uri.parse(
+          "http://10.0.2.2:3000/careers/student/branch/$codigoAlumno/$codigoSucursal"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> studentSectionNO(codigoAlumno, codigoSucursal) async {
+    try {
+      final response = await http.get(Uri.parse(
+          "http://10.0.2.2:3000/section/student/$codigoSucursal/$codigoAlumno"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> getInfoSectionsStudent(codigoAlumno) async {
+    try {
+      final response = await http
+          .get(Uri.parse("http://10.0.2.2:3000/section/student/$codigoAlumno"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Update
+  static Future<void> patchScore(codigoAlumno, codigoSeccion, nota) async {
+    try {
+      var response = await http.put(
+          Uri.parse("http://10.0.2.2:3000/section/$codigoAlumno"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: json.encode(
+            {
+              "_codigoSeccion": codigoSeccion.toString(),
+              "_nota": nota.toString()
+            },
+          ));
+      if (response.statusCode == 200) {
+        toastSucces();
       }
     } catch (e) {
       rethrow;

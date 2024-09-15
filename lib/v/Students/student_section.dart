@@ -1,21 +1,22 @@
 import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
-class EnrollStudents extends StatefulWidget {
-  const EnrollStudents({super.key, required this.ontap});
-  final Function ontap;
+class StudentSection extends StatefulWidget {
+  const StudentSection({super.key, required this.onTap});
+  final Function onTap;
   @override
-  State<EnrollStudents> createState() => _EnrollStudentsState();
+  State<StudentSection> createState() => _StudentSectionState();
 }
 
-class _EnrollStudentsState extends State<EnrollStudents> {
-  //Variables
+class _StudentSectionState extends State<StudentSection> {
+  //variables
   List<dynamic> _branches = [];
   List<dynamic> _students = [];
-  List<dynamic> _careers = [];
-  int? _selectedStudent;
-  int? _selectedCareer;
+  List<dynamic> _sections = [];
+
   int? _selectedBranch;
+  int? _selectedStudent;
+  int? _selectedSection;
 
   Future<void> _getBranches() async {
     final json = await API.getBranches();
@@ -73,8 +74,7 @@ class _EnrollStudentsState extends State<EnrollStudents> {
                         final jsonStudent = await API
                             .branchStudent(selectedBranche?['_codigoSucursal']);
                         setState(() {
-                          //Borrar la carrera
-                          _careers = [];
+                          _sections = [];
                           _students = jsonStudent;
                           _selectedBranch = selectedBranche?['_codigoSucursal'];
                         });
@@ -98,11 +98,11 @@ class _EnrollStudentsState extends State<EnrollStudents> {
                         );
                       }).toList(),
                       onChanged: (Map<String, dynamic>? selectedStudent) async {
-                        final json = await API.careerStudentNo(
+                        final json = await API.studentSectionNO(
                             selectedStudent?['_codigoAlumno'], _selectedBranch);
                         setState(() {
                           _selectedStudent = selectedStudent?['_codigoAlumno'];
-                          _careers = json;
+                          _sections = json;
                         });
                       },
                       hint: const Text('Seleccione un alumno'),
@@ -120,25 +120,25 @@ class _EnrollStudentsState extends State<EnrollStudents> {
                       isExpanded: true,
                       decoration:
                           const InputDecoration(border: OutlineInputBorder()),
-                      items: _careers.map((career) {
+                      items: _sections.map((section) {
                         return DropdownMenuItem<Map<String, dynamic>>(
-                          value: career,
+                          value: section,
                           child: Text(
-                            "${career['_codigoCarrera']}-${career['_nombre']}",
+                            "${section['_codigoSeccion']}-${section['_nombre']}",
                             overflow: TextOverflow.ellipsis,
                           ),
                         );
                       }).toList(),
-                      onChanged: (Map<String, dynamic>? selectedCareer) async {
+                      onChanged: (Map<String, dynamic>? selectedSection) async {
                         setState(() {
-                          _selectedCareer = selectedCareer?['_codigoCarrera'];
+                          _selectedSection = selectedSection?['_codigoSeccion'];
                         });
                       },
-                      hint: const Text('Seleccione una Carrera'),
-                      value: _careers.isNotEmpty
-                          ? _careers.firstWhere(
-                              (career) =>
-                                  career['_codigoCarrera'] == _selectedCareer,
+                      hint: const Text('Seleccione una seccion'),
+                      value: _sections.isNotEmpty
+                          ? _sections.firstWhere(
+                              (section) =>
+                                  section['_codigoSeccion'] == _selectedSection,
                               orElse: () => null)
                           : null,
                     ),
@@ -153,9 +153,9 @@ class _EnrollStudentsState extends State<EnrollStudents> {
                 GestureDetector(
                   onTap: () async {
                     API
-                        .postStudentCareer(_selectedCareer, _selectedStudent)
+                        .postStudentSection(_selectedStudent, _selectedSection)
                         .then((_) {
-                      widget.ontap(0, pop: false);
+                      widget.onTap(0, pop: false);
                     });
                   },
                   child: Container(
@@ -165,7 +165,7 @@ class _EnrollStudentsState extends State<EnrollStudents> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(10)),
                     child: const Text(
-                      "Matricular Carrera",
+                      "Matricular Seccion",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
