@@ -51,7 +51,7 @@ class LandingPage extends StatelessWidget {
                   child: Column(
                     children: [
                       const Text(
-                        "¡Bienvenido ERIC LEONARDO FUNEZ AGUILERA!",
+                        "¡Bienvenido Administrador!",
                         style: TextStyle(fontSize: 17),
                         textAlign: TextAlign.center,
                       ),
@@ -69,7 +69,7 @@ class LandingPage extends StatelessWidget {
                       const SizedBox(
                         height: 15,
                       ),
-                      _richText("Estimado estudiante: ",
+                      _richText("Importante: ",
                           "La aplicación de descuentos debe ser solicitado solamente en el periodo de matricula ordinaria y extraordinaria, fuera de estas fechas no será posible la aplicación."),
                       const SizedBox(
                         height: 15,

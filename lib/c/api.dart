@@ -690,4 +690,95 @@ class API {
       rethrow;
     }
   }
+
+  static Future<dynamic> patchSection(
+      codigoSeccion, codigoAsignatura, codigoDocente, codigoAula) async {
+    try {
+      final response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/sections/$codigoSeccion"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode({
+            "_codigoAsignatura": codigoAsignatura,
+            "_codigoDocente": codigoDocente,
+            "_codigoAula": codigoAula
+          }));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> getStudentCellphone(codigoAlumno) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/students/cellphone/$codigoAlumno"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> getTeacherCellphone(codigoDocente) async {
+    try {
+      final response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/teachers/cellphone/$codigoDocente"));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw "Error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> postCellphoneTeacher(codigoDocente, numero) async {
+    try {
+      final response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/teachers/cellphone"),
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: jsonEncode({
+                "_codigoDocente": codigoDocente,
+                "_numero": numero,
+              }));
+      if (response.statusCode == 200) {
+        toastSucces();
+      } else {
+        toastError();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> postCellphoneStudent(codigoAlumno, numero) async {
+    try {
+      final response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/students/cellphone"),
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: jsonEncode({
+                "_codigoAlumno": codigoAlumno,
+                "_numero": numero,
+              }));
+      if (response.statusCode == 200) {
+        toastSucces();
+      } else {
+        toastError();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

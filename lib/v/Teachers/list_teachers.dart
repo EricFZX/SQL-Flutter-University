@@ -12,6 +12,7 @@ class ListTeachers extends StatefulWidget {
 class _ListTeachersState extends State<ListTeachers> {
   //Variables
   List<dynamic> _teachers = [];
+  final TextEditingController _cellphone = TextEditingController();
 
   Future<void> deleteDialog(codigoDocente) {
     return showDialog(
@@ -33,6 +34,72 @@ class _ListTeachersState extends State<ListTeachers> {
                 },
                 child: const Text("Cancelar"))
           ],
+        );
+      },
+    );
+  }
+
+  Future<void> addCellphone(codigoDocente) async {
+    _cellphone.clear();
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "AGREGAR TELEFONO",
+            textAlign: TextAlign.center,
+          ),
+          content: TextField(
+            controller: _cellphone,
+            decoration: const InputDecoration(hintText: "Nm.Telefono"),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  await API.postCellphoneTeacher(codigoDocente, _cellphone.text);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancelar"))
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> cellPhonesDialog(codigoDocente) async {
+    final json = await API.getTeacherCellphone(codigoDocente);
+    List<dynamic> cellphones = [];
+    setState(() {
+      cellphones = json;
+    });
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Telefonos",
+            textAlign: TextAlign.center,
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 250,
+            child: ListView.builder(
+              itemCount: cellphones.length,
+              itemBuilder: (context, index) {
+                dynamic cellphone = cellphones[index];
+                index++;
+                return ListTile(
+                  title: Text("$index.${cellphone['_numero']}"),
+                );
+              },
+            ),
+          ),
         );
       },
     );
@@ -63,6 +130,7 @@ class _ListTeachersState extends State<ListTeachers> {
                 DataColumn(label: Text("P.Apellido")),
                 DataColumn(label: Text("S.Apellido")),
                 DataColumn(label: Text("Salario")),
+                DataColumn(label: Text("Telefonos")),
                 DataColumn(label: Text("Acciones"))
               ],
               rows: _teachers.map((row) {
@@ -74,6 +142,21 @@ class _ListTeachersState extends State<ListTeachers> {
                   DataCell(Text(row['_primerApellido'])),
                   DataCell(Text(row['_segundoApellido'])),
                   DataCell(Text(row['_salario'].toString())),
+                  DataCell(Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => cellPhonesDialog(row['_codigoDocente']),
+                        child: const Icon(Icons.remove_red_eye),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () => addCellphone(row['_codigoDocente']),
+                        child: const Icon(Icons.add),
+                      )
+                    ],
+                  )),
                   DataCell(Row(
                     children: [
                       GestureDetector(

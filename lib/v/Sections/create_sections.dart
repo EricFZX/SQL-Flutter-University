@@ -2,9 +2,16 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CreateSections extends StatefulWidget {
-  const CreateSections({super.key, required this.edit, required this.onTap});
+  const CreateSections(
+      {super.key,
+      required this.edit,
+      this.onTap,
+      this.updateState,
+      this.section});
   final bool edit;
-  final Function onTap;
+  final Function? onTap;
+  final Function? updateState;
+  final dynamic section;
   @override
   State<CreateSections> createState() => _CreateSectionsState();
 }
@@ -27,10 +34,30 @@ class _CreateSectionsState extends State<CreateSections> {
     });
   }
 
+  Future<void> getData() async {
+    if (widget.edit) {
+      _selectedTeacher = widget.section['_codigoDocente'];
+      _selectedSubject = widget.section['_codigoAsignatura'];
+      _selectedClassroom = widget.section['_codigoAula'];
+      final jsonTeacher =
+          await API.branchTeacher(widget.section['_codigoSucursal']);
+      final jsonSubject =
+          await API.branchSubject(widget.section['_codigoSucursal']);
+      final jsonClassroom =
+          await API.branchClassroom(widget.section['_codigoSucursal']);
+      setState(() {
+        _teachers = jsonTeacher;
+        _subjects = jsonSubject;
+        _classrooms = jsonClassroom;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getBranches();
+    getData();
   }
 
   @override
@@ -59,38 +86,40 @@ class _CreateSectionsState extends State<CreateSections> {
                 Expanded(
                     child: SingleChildScrollView(
                   child: Column(children: [
-                    DropdownButtonFormField<Map<String, dynamic>>(
-                      isExpanded: true,
-                      decoration:
-                          const InputDecoration(border: OutlineInputBorder()),
-                      items: _branches.map((branch) {
-                        return DropdownMenuItem<Map<String, dynamic>>(
-                          value: branch,
-                          child: Text(
-                            branch['_nombre'],
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (Map<String, dynamic>? selectedBranche) async {
-                        final jsonTeachers = await API
-                            .branchTeacher(selectedBranche?['_codigoSucursal']);
-                        final jsonSubjects = await API
-                            .branchSubject(selectedBranche?['_codigoSucursal']);
-                        final jsonCareers = await API.branchClassroom(
-                            selectedBranche?['_codigoSucursal']);
+                    if (!widget.edit)
+                      DropdownButtonFormField<Map<String, dynamic>>(
+                        isExpanded: true,
+                        decoration:
+                            const InputDecoration(border: OutlineInputBorder()),
+                        items: _branches.map((branch) {
+                          return DropdownMenuItem<Map<String, dynamic>>(
+                            value: branch,
+                            child: Text(
+                              branch['_nombre'],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged:
+                            (Map<String, dynamic>? selectedBranche) async {
+                          final jsonTeachers = await API.branchTeacher(
+                              selectedBranche?['_codigoSucursal']);
+                          final jsonSubjects = await API.branchSubject(
+                              selectedBranche?['_codigoSucursal']);
+                          final jsonCareers = await API.branchClassroom(
+                              selectedBranche?['_codigoSucursal']);
 
-                        setState(() {
-                          _teachers = [];
-                          _subjects = [];
-                          _classrooms = [];
-                          _teachers = jsonTeachers;
-                          _subjects = jsonSubjects;
-                          _classrooms = jsonCareers;
-                        });
-                      },
-                      hint: const Text('Seleccione una sucursal'),
-                    ),
+                          setState(() {
+                            _teachers = [];
+                            _subjects = [];
+                            _classrooms = [];
+                            _teachers = jsonTeachers;
+                            _subjects = jsonSubjects;
+                            _classrooms = jsonCareers;
+                          });
+                        },
+                        hint: const Text('Seleccione una sucursal'),
+                      ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -195,12 +224,25 @@ class _CreateSectionsState extends State<CreateSections> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API
-                        .postSection(_selectedSubject, _selectedTeacher,
-                            _selectedClassroom)
-                        .then((_) {
-                      widget.onTap(0, pop: false);
-                    });
+                    if (widget.edit) {
+                      API
+                          .patchSection(
+                              widget.section['_codigoSeccion'],
+                              _selectedSubject,
+                              _selectedTeacher,
+                              _selectedClassroom)
+                          .then((_) {
+                        widget.updateState!();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      API
+                          .postSection(_selectedSubject, _selectedTeacher,
+                              _selectedClassroom)
+                          .then((_) {
+                        widget.onTap!(0, pop: false);
+                      });
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),

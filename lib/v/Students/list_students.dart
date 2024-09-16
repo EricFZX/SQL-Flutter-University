@@ -13,6 +13,7 @@ class ListStudents extends StatefulWidget {
 class _ListStudentsState extends State<ListStudents> {
   //Variables
   List<dynamic> _students = [];
+  final TextEditingController _cellphone = TextEditingController();
 
   Future<void> deleteDialog(codigoAlumno) {
     return showDialog(
@@ -24,6 +25,71 @@ class _ListStudentsState extends State<ListStudents> {
             TextButton(
                 onPressed: () async {
                   await API.deleteStudent(codigoAlumno);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancelar"))
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> cellPhonesDialog(codigoAlumno) async {
+    final json = await API.getStudentCellphone(codigoAlumno);
+    List<dynamic> cellphones = [];
+    setState(() {
+      cellphones = json;
+    });
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Telefonos",
+            textAlign: TextAlign.center,
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 250,
+            child: ListView.builder(
+              itemCount: cellphones.length,
+              itemBuilder: (context, index) {
+                dynamic cellphone = cellphones[index];
+                index++;
+                return ListTile(
+                  title: Text("$index.${cellphone['_numero']}"),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Future<void> addCellphone(codigoAlumno) async {
+    _cellphone.clear();
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "AGREGAR TELEFONO",
+            textAlign: TextAlign.center,
+          ),
+          content: TextField(
+            controller: _cellphone,
+            decoration: const InputDecoration(hintText: "Nm.Telefono"),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  await API.postCellphoneStudent(codigoAlumno,_cellphone.text);
                   setState(() {});
                   Navigator.pop(context);
                 },
@@ -63,6 +129,7 @@ class _ListStudentsState extends State<ListStudents> {
                 DataColumn(label: Text("S.Nombre")),
                 DataColumn(label: Text("P.Apellido")),
                 DataColumn(label: Text("S.Apellido")),
+                DataColumn(label: Text("Telefonos")),
                 DataColumn(label: Text("Acciones"))
               ],
               rows: _students.map((row) {
@@ -73,6 +140,21 @@ class _ListStudentsState extends State<ListStudents> {
                   DataCell(Text(row['_segundoNombre'])),
                   DataCell(Text(row['_primerApellido'])),
                   DataCell(Text(row['_segundoApellido'])),
+                  DataCell(Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => cellPhonesDialog(row['_codigoAlumno']),
+                        child: const Icon(Icons.remove_red_eye),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () =>addCellphone(row['_codigoAlumno']),
+                        child: const Icon(Icons.add),
+                      )
+                    ],
+                  )),
                   DataCell(SizedBox(
                     width: 100,
                     child: Row(

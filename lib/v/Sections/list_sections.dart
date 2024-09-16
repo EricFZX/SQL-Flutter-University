@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Sections/create_sections.dart';
 import 'package:flutter/material.dart';
 
 class ListSections extends StatefulWidget {
@@ -37,6 +38,10 @@ class _ListSectionsState extends State<ListSections> {
     );
   }
 
+  void updateState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,11 +77,26 @@ class _ListSectionsState extends State<ListSections> {
                   DataCell(Text(row['Docente'])),
                   DataCell(Row(
                     children: [
-                      IconButton(
-                          onPressed: () {
-                            deleteDialog(row['_codigoSeccion']);
-                          },
-                          icon: const Icon(Icons.delete))
+                      GestureDetector(
+                        onTap: () => deleteDialog(row['_codigoSeccion']),
+                        child: const Icon(Icons.delete),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateSections(
+                                        edit: true,
+                                        section: row,
+                                        updateState: updateState,
+                                      )));
+                        },
+                        child: const Icon(Icons.edit),
+                      )
                     ],
                   ))
                 ]);
