@@ -1,4 +1,6 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Branches/create_branches.dart';
+import 'package:bd_project/v/Students/create_students.dart';
 import 'package:flutter/material.dart';
 
 class ListBranches extends StatefulWidget {
@@ -37,6 +39,10 @@ class _ListBranchesState extends State<ListBranches> {
     );
   }
 
+  void updateState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +76,23 @@ class _ListBranchesState extends State<ListBranches> {
                       GestureDetector(
                         onTap: () => deleteDialog(row['_codigoSucursal']),
                         child: const Icon(Icons.delete),
-                      )
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateBranches(
+                                        edit: true,
+                                        branch: row,
+                                        updateState: updateState,
+                                      )));
+                        },
+                        child: const Icon(Icons.edit),
+                      ),
                     ],
                   ))
                 ]);

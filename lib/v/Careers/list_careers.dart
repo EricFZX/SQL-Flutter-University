@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Careers/create_careers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -39,6 +40,10 @@ class _ListCareersState extends State<ListCareers> {
       );
     }
 
+    void updateState() {
+      setState(() {});
+    }
+
     return Scaffold(
       body: FutureBuilder(
         future: API.getCareers(),
@@ -72,7 +77,23 @@ class _ListCareersState extends State<ListCareers> {
                       GestureDetector(
                         onTap: () => deleteDialog(row['_codigoCarrera']),
                         child: const Icon(Icons.delete),
-                      )
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateCareers(
+                                        edit: true,
+                                        career: row,
+                                        updateState: updateState,
+                                      )));
+                        },
+                        child: const Icon(Icons.edit),
+                      ),
                     ],
                   ))
                 ]);

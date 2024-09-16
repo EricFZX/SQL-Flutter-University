@@ -51,6 +51,19 @@ class _InfoStudentState extends State<InfoStudent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue[800],
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Image.asset(
+              "images/logo_blanco.png",
+              width: 150,
+            )
+          ],
+        ),
+      ),
       body: FutureBuilder(
         future: API.getInfoSectionsStudent(widget.codigoAlumno),
         builder: (context, snapshot) {

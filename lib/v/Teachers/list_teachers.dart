@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Teachers/create_teachers.dart';
 import 'package:flutter/material.dart';
 
 class ListTeachers extends StatefulWidget {
@@ -35,6 +36,10 @@ class _ListTeachersState extends State<ListTeachers> {
         );
       },
     );
+  }
+
+  void updateState() {
+    setState(() {});
   }
 
   @override
@@ -74,7 +79,23 @@ class _ListTeachersState extends State<ListTeachers> {
                       GestureDetector(
                         onTap: () => deleteDialog(row['_codigoDocente']),
                         child: const Icon(Icons.delete),
-                      )
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateTeachers(
+                                        edit: true,
+                                        teacher: row,
+                                        updateState: updateState,
+                                      )));
+                        },
+                        child: const Icon(Icons.edit),
+                      ),
                     ],
                   ))
                 ]);

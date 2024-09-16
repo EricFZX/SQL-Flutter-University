@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Classroom/create_classrooms.dart';
 import 'package:flutter/material.dart';
 
 class ListClassroom extends StatefulWidget {
@@ -36,6 +37,10 @@ class _ListClassroomState extends State<ListClassroom> {
     );
   }
 
+  void updateState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,11 +68,26 @@ class _ListClassroomState extends State<ListClassroom> {
                   DataCell(Text(row['_cupos'].toString())),
                   DataCell(Row(
                     children: [
-                      IconButton(
-                          onPressed: () {
-                            deleteDialog(row['_codigoAula']);
-                          },
-                          icon: const Icon(Icons.delete))
+                      GestureDetector(
+                        onTap: () => deleteDialog(row['_codigoAula']),
+                        child: const Icon(Icons.delete),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateClassrooms(
+                                        edit: true,
+                                        classroom: row,
+                                        updateState: updateState,
+                                      )));
+                        },
+                        child: const Icon(Icons.edit),
+                      ),
                     ],
                   ))
                 ]);

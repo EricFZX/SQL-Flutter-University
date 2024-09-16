@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Students/create_students.dart';
 import 'package:bd_project/v/Students/info_student.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +37,10 @@ class _ListStudentsState extends State<ListStudents> {
         );
       },
     );
+  }
+
+  void updateState() {
+    setState(() {});
   }
 
   @override
@@ -78,7 +83,16 @@ class _ListStudentsState extends State<ListStudents> {
                           child: const Icon(Icons.delete),
                         ),
                         GestureDetector(
-                          onTap: () => (),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateStudents(
+                                          edit: true,
+                                          student: row,
+                                          updateState: updateState,
+                                        )));
+                          },
                           child: const Icon(Icons.edit),
                         ),
                         GestureDetector(

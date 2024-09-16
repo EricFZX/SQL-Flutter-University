@@ -2,9 +2,17 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CreateStudents extends StatefulWidget {
-  const CreateStudents({super.key, required this.edit, required this.ontTap});
+  const CreateStudents(
+      {super.key,
+      required this.edit,
+      this.ontTap,
+      this.updateState,
+      this.student});
   final bool edit;
-  final Function ontTap;
+  final Function? ontTap;
+  final Function? updateState;
+  final dynamic student;
+
   @override
   State<CreateStudents> createState() => _CreateStudentsState();
 }
@@ -27,9 +35,21 @@ class _CreateStudentsState extends State<CreateStudents> {
     });
   }
 
+  void getData() {
+    if (widget.edit) {
+      _fName.text = widget.student['_primerNombre'];
+      _sName.text = widget.student['_segundoNombre'];
+      _fLastname.text = widget.student['_primerApellido'];
+      _sLastname.text = widget.student['_segundoApellido'];
+      _dni.text = widget.student['_DNI'];
+      _selectedBranche = widget.student['_codigoSucursal'];
+    }
+  }
+
   @override
   void initState() {
     _getBranches();
+    getData();
     super.initState();
   }
 
@@ -137,6 +157,13 @@ class _CreateStudentsState extends State<CreateStudents> {
                           });
                         },
                         hint: const Text('Selecciona una sucursal'),
+                        value: _branches.isNotEmpty
+                            ? _branches.firstWhere(
+                                (sucursal) =>
+                                    sucursal['_codigoSucursal'] ==
+                                    _selectedBranche,
+                                orElse: () => null)
+                            : null,
                       ),
                       const SizedBox(
                         height: 15,
@@ -149,12 +176,33 @@ class _CreateStudentsState extends State<CreateStudents> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API
-                        .postStudent(_dni.text, _fName.text, _sName.text,
-                            _fLastname.text, _sLastname.text, _selectedBranche)
-                        .then((_) {
-                      widget.ontTap(0, pop: false);
-                    });
+                    if (widget.edit) {
+                      await API
+                          .patchStudent(
+                              widget.student['_codigoAlumno'],
+                              _dni.text,
+                              _fName.text,
+                              _sName.text,
+                              _fLastname.text,
+                              _sLastname.text,
+                              _selectedBranche)
+                          .then((_) {
+                        widget.updateState!();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      API
+                          .postStudent(
+                              _dni.text,
+                              _fName.text,
+                              _sName.text,
+                              _fLastname.text,
+                              _sLastname.text,
+                              _selectedBranche)
+                          .then((_) {
+                        widget.ontTap!(0, pop: false);
+                      });
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),

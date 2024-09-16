@@ -2,9 +2,16 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CreateTeachers extends StatefulWidget {
-  const CreateTeachers({super.key, required this.edit, required this.onTap});
-  final Function onTap;
+  const CreateTeachers(
+      {super.key,
+      required this.edit,
+      this.onTap,
+      this.updateState,
+      this.teacher});
+  final Function? onTap;
   final bool edit;
+  final Function? updateState;
+  final dynamic teacher;
   @override
   State<CreateTeachers> createState() => _CreateTeachersState();
 }
@@ -28,10 +35,23 @@ class _CreateTeachersState extends State<CreateTeachers> {
     });
   }
 
+  void getData() {
+    if (widget.edit) {
+      _fName.text = widget.teacher['_primerNombre'];
+      _sName.text = widget.teacher['_segundoNombre'];
+      _fLastname.text = widget.teacher['_primerApellido'];
+      _sLastname.text = widget.teacher['_segundoApellido'];
+      _dni.text = widget.teacher['_DNI'];
+      _salario.text = widget.teacher['_salario'].toString();
+      _selectedBranche = widget.teacher['_codigoSucursal'];
+    }
+  }
+
   @override
   void initState() {
-    _getBranches();
     super.initState();
+    _getBranches();
+    getData();
   }
 
   @override
@@ -150,6 +170,13 @@ class _CreateTeachersState extends State<CreateTeachers> {
                           });
                         },
                         hint: const Text('Selecciona una sucursal'),
+                        value: _branches.isNotEmpty
+                            ? _branches.firstWhere(
+                                (sucursal) =>
+                                    sucursal['_codigoSucursal'] ==
+                                    _selectedBranche,
+                                orElse: () => null)
+                            : null,
                       ),
                       const SizedBox(
                         height: 15,
@@ -162,18 +189,35 @@ class _CreateTeachersState extends State<CreateTeachers> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API
-                        .postTeacher(
-                            _dni.text,
-                            _fName.text,
-                            _sName.text,
-                            _fLastname.text,
-                            _sLastname.text,
-                            _salario.text,
-                            _selectedBranche)
-                        .then((_) {
-                      widget.onTap(0, pop: false);
-                    });
+                    if (widget.edit) {
+                      API
+                          .patchTeacher(
+                              widget.teacher['_codigoDocente'],
+                              _dni.text,
+                              _fName.text,
+                              _sName.text,
+                              _fLastname.text,
+                              _sLastname.text,
+                              _salario.text,
+                              _selectedBranche)
+                          .then((_) {
+                        widget.updateState!();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      API
+                          .postTeacher(
+                              _dni.text,
+                              _fName.text,
+                              _sName.text,
+                              _fLastname.text,
+                              _sLastname.text,
+                              _salario.text,
+                              _selectedBranche)
+                          .then((_) {
+                        widget.onTap!(0, pop: false);
+                      });
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),

@@ -2,9 +2,16 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CreateCareers extends StatefulWidget {
-  const CreateCareers({super.key, required this.edit, required this.onTap});
+  const CreateCareers(
+      {super.key,
+      required this.edit,
+      this.onTap,
+      this.updateState,
+      this.career});
   final bool edit;
-  final Function onTap;
+  final Function? onTap;
+  final Function? updateState;
+  final dynamic career;
   @override
   State<CreateCareers> createState() => _CreateCareersState();
 }
@@ -13,6 +20,19 @@ class _CreateCareersState extends State<CreateCareers> {
   //Variables
   final TextEditingController _nombre = TextEditingController();
   final TextEditingController _uvs = TextEditingController();
+
+  void getData() {
+    if (widget.edit) {
+      _nombre.text = widget.career['_nombre'];
+      _uvs.text = widget.career['_UV'].toString();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +91,19 @@ class _CreateCareersState extends State<CreateCareers> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API.postCareer(_nombre.text, _uvs.text).then((_) {
-                      widget.onTap(0, pop: false);
-                    });
+                    if (widget.edit) {
+                      API
+                          .patchCareer(widget.career['_codigoCarrera'],
+                              _nombre.text, _uvs.text)
+                          .then((_) {
+                        widget.updateState!();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      API.postCareer(_nombre.text, _uvs.text).then((_) {
+                        widget.onTap!(0, pop: false);
+                      });
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),

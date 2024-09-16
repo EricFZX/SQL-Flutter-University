@@ -1,4 +1,5 @@
 import 'package:bd_project/c/api.dart';
+import 'package:bd_project/v/Subjects/create_subjects.dart';
 import 'package:flutter/material.dart';
 
 class ListSubjects extends StatefulWidget {
@@ -37,6 +38,10 @@ class _ListSubjectsState extends State<ListSubjects> {
     );
   }
 
+  void updateState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +71,23 @@ class _ListSubjectsState extends State<ListSubjects> {
                       GestureDetector(
                         onTap: () => deleteDialog(row['_codigoAsignatura']),
                         child: const Icon(Icons.delete),
-                      )
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateSubjects(
+                                        edit: true,
+                                        subject: row,
+                                        updateState: updateState,
+                                      )));
+                        },
+                        child: const Icon(Icons.edit),
+                      ),
                     ],
                   ))
                 ]);

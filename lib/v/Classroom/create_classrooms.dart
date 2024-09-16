@@ -2,9 +2,16 @@ import 'package:bd_project/c/api.dart';
 import 'package:flutter/material.dart';
 
 class CreateClassrooms extends StatefulWidget {
-  const CreateClassrooms({super.key, required this.edit, required this.onTap});
+  const CreateClassrooms(
+      {super.key,
+      required this.edit,
+      this.onTap,
+      this.updateState,
+      this.classroom});
   final bool edit;
-  final Function onTap;
+  final Function? onTap;
+  final Function? updateState;
+  final dynamic classroom;
   @override
   State<CreateClassrooms> createState() => _CreateClassroomsState();
 }
@@ -22,10 +29,17 @@ class _CreateClassroomsState extends State<CreateClassrooms> {
     });
   }
 
+  void getData() {
+    if (widget.edit) {
+      _cupos.text = widget.classroom['_cupos'].toString();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getBranches();
+    getData();
   }
 
   @override
@@ -55,24 +69,25 @@ class _CreateClassroomsState extends State<CreateClassrooms> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DropdownButtonFormField<Map<String, dynamic>>(
-                        isExpanded: true,
-                        decoration:
-                            const InputDecoration(border: OutlineInputBorder()),
-                        items: _branches.map((sucursal) {
-                          return DropdownMenuItem<Map<String, dynamic>>(
-                            value: sucursal,
-                            child: Text(sucursal['_nombre']),
-                          );
-                        }).toList(),
-                        onChanged: (Map<String, dynamic>? selectedSucursal) {
-                          setState(() {
-                            _selectedBranche =
-                                selectedSucursal?['_codigoSucursal'];
-                          });
-                        },
-                        hint: const Text('Selecciona una sucursal'),
-                      ),
+                      if (!widget.edit)
+                        DropdownButtonFormField<Map<String, dynamic>>(
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder()),
+                          items: _branches.map((sucursal) {
+                            return DropdownMenuItem<Map<String, dynamic>>(
+                              value: sucursal,
+                              child: Text(sucursal['_nombre']),
+                            );
+                          }).toList(),
+                          onChanged: (Map<String, dynamic>? selectedSucursal) {
+                            setState(() {
+                              _selectedBranche =
+                                  selectedSucursal?['_codigoSucursal'];
+                            });
+                          },
+                          hint: const Text('Selecciona una sucursal'),
+                        ),
                       const SizedBox(
                         height: 15,
                       ),
@@ -97,8 +112,18 @@ class _CreateClassroomsState extends State<CreateClassrooms> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API.postClassroom(_selectedBranche, _cupos.text);
-                    widget.onTap(17, pop: false);
+                    if (widget.edit) {
+                      await API
+                          .patchClassroom(
+                              widget.classroom['_codigoAula'], _cupos.text)
+                          .then((_) {
+                        widget.updateState!();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      await API.postClassroom(_selectedBranche, _cupos.text);
+                      widget.onTap!(17, pop: false);
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),

@@ -553,7 +553,7 @@ class API {
   //Update
   static Future<void> patchScore(codigoAlumno, codigoSeccion, nota) async {
     try {
-      var response = await http.put(
+      var response = await http.patch(
           Uri.parse("http://10.0.2.2:3000/section/$codigoAlumno"),
           headers: {
             "Content-Type": "application/json; charset=utf-8",
@@ -564,6 +564,125 @@ class API {
               "_nota": nota.toString()
             },
           ));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> patchBranch(
+      codigoSucursal, nombre, departamento, ciudad, calle) async {
+    try {
+      var response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/branches/$codigoSucursal"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: json.encode({
+            "_nombre": nombre,
+            "_departamento": departamento,
+            "_ciudad": ciudad,
+            "_calle": calle
+          }));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> patchStudent(codigoAlumno, String dni, fName, sName,
+      fLastname, sLastname, branch) async {
+    try {
+      var response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/students/$codigoAlumno"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: json.encode(
+            {
+              "_DNI": dni,
+              "_primerNombre": fName,
+              "_segundoNombre": sName,
+              "_primerApellido": fLastname,
+              "_segundoApellido": sLastname,
+              "_codigoSucursal": branch.toString(),
+            },
+          ));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> patchTeacher(codigoDocente, String dni, fName, sName,
+      fLastname, sLastname, salario, branch) async {
+    try {
+      var response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/teachers/$codigoDocente"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: json.encode(
+            {
+              "_DNI": dni,
+              "_primerNombre": fName,
+              "_segundoNombre": sName,
+              "_primerApellido": fLastname,
+              "_segundoApellido": sLastname,
+              "_salario": salario,
+              "_codigoSucursal": branch.toString(),
+            },
+          ));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> patchSubject(codigoAsignatura, nombre, uv) async {
+    final response = await http.patch(
+        Uri.parse("http://10.0.2.2:3000/subjects/$codigoAsignatura"),
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: jsonEncode({"_nombre": nombre, "_UV": uv}));
+    if (response.statusCode == 200) {
+      toastSucces();
+    }
+  }
+
+  static Future<dynamic> patchCareer(codigoCarrera, nombre, uv) async {
+    try {
+      final response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/careers/$codigoCarrera"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode({"_nombre": nombre, "_UV": uv}));
+      if (response.statusCode == 200) {
+        toastSucces();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> patchClassroom(codigoAula, cupos) async {
+    try {
+      final response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/classrooms/$codigoAula"),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode({"_cupos": cupos}));
       if (response.statusCode == 200) {
         toastSucces();
       }

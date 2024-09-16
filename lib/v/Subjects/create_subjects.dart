@@ -5,10 +5,14 @@ class CreateSubjects extends StatefulWidget {
   const CreateSubjects({
     super.key,
     required this.edit,
-    required this.onTap,
+    this.onTap,
+    this.updateState,
+    this.subject,
   });
   final bool edit;
-  final Function onTap;
+  final Function? onTap;
+  final Function? updateState;
+  final dynamic subject;
   @override
   State<CreateSubjects> createState() => _CreateSubjectsState();
 }
@@ -17,6 +21,19 @@ class _CreateSubjectsState extends State<CreateSubjects> {
   //Variables
   final TextEditingController _nombre = TextEditingController();
   final TextEditingController _uvs = TextEditingController();
+
+  void getData() {
+    if (widget.edit) {
+      _nombre.text = widget.subject['_nombre'];
+      _uvs.text = widget.subject['_UV'].toString();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +92,19 @@ class _CreateSubjectsState extends State<CreateSubjects> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    API.postSubject(_nombre.text, _uvs.text).then((_) {
-                      widget.onTap(0, pop: false);
-                    });
+                    if (widget.edit) {
+                      API
+                          .patchSubject(widget.subject['_codigoAsignatura'],
+                              _nombre.text, _uvs.text)
+                          .then((_) {
+                        widget.updateState!();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      API.postSubject(_nombre.text, _uvs.text).then((_) {
+                        widget.onTap!(0, pop: false);
+                      });
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
